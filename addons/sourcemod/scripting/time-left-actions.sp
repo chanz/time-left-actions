@@ -49,21 +49,13 @@ P L U G I N   I N F O
 
 
 *****************************************************************/
-#define PLUGIN_NAME				"Time Left Actions"
-#define PLUGIN_TAG				"sm"
-#define PLUGIN_PRINT_PREFIX		"[SM] "
-#define PLUGIN_AUTHOR			"Chanz"
-#define PLUGIN_DESCRIPTION		"Actions like sounds and command are executed when a specified time has been reached."
-#define PLUGIN_VERSION 			"3.0"
-#define PLUGIN_URL				"http://forums.alliedmods.net/showthread.php?p=843377"
-
 public Plugin:myinfo = 
 {
-	name = PLUGIN_NAME, 
-	author = PLUGIN_AUTHOR, 
-	description = PLUGIN_DESCRIPTION, 
-	version = PLUGIN_VERSION, 
-	url = PLUGIN_URL
+	name = "Time Left Actions", 
+	author = "Chanz", 
+	description = "Actions like sounds and command are executed when a specified time has been reached.", 
+	version = "3.0", 
+	url = "http://forums.alliedmods.net/showthread.php?p=843377"
 }
 
 /*****************************************************************
