@@ -35,12 +35,12 @@ stock Entity_IsValid(entity)
  * cheaper, use this if you call this function very often.
  *
  * @param name			Name of the entity you want so search.
- * @param class			Optional: Classname of the entity
+ * @param className		Optional: Classname of the entity
  * @return				Entity index or INVALID_ENT_REFERENCE if not matching entity was found.
  */
-stock Entity_FindByName(const const String:name[], const String:class[]="")
+stock Entity_FindByName(const String:name[], const String:className[]="")
 {
-	if (class[0] == '\0') {
+	if (className[0] == '\0') {
 		// Hack: Double the limit to gets none-networked entities too.
 		new realMaxEntities = GetMaxEntities() * 2;
 		for (new entity=0; entity < realMaxEntities; entity++) {
@@ -56,7 +56,7 @@ stock Entity_FindByName(const const String:name[], const String:class[]="")
 	}
 	else {
 		new entity = INVALID_ENT_REFERENCE;
-		while ((entity = FindEntityByClassname(entity, class)) != INVALID_ENT_REFERENCE) {
+		while ((entity = FindEntityByClassname(entity, className)) != INVALID_ENT_REFERENCE) {
 
 			if (Entity_NameMatches(entity, name)) {
 				return entity;
@@ -78,12 +78,12 @@ stock Entity_FindByName(const const String:name[], const String:class[]="")
  * cheaper, use this if you call this function very often.
  *
  * @param hammerId		Hammer editor ID
- * @param class			Optional: Classname of the entity
+ * @param className		Optional: Classname of the entity
  * @return				Edict Index or INVALID_ENT_REFERENCE if no entity was found.
  */
-stock Entity_FindByHammerId(hammerId, const String:class[]="")
+stock Entity_FindByHammerId(hammerId, const String:className[]="")
 {
-	if (class[0] == '\0') {
+	if (className[0] == '\0') {
 		// Hack: Double the limit to gets none-networked entities too.
 		new realMaxEntities = GetMaxEntities() * 2;
 		for (new entity=0; entity < realMaxEntities; entity++) {
@@ -99,7 +99,7 @@ stock Entity_FindByHammerId(hammerId, const String:class[]="")
 	}
 	else {
 		new entity = INVALID_ENT_REFERENCE;
-		while ((entity = FindEntityByClassname(entity, class)) != INVALID_ENT_REFERENCE) {
+		while ((entity = FindEntityByClassname(entity, className)) != INVALID_ENT_REFERENCE) {
 			
 			if (Entity_GetHammerId(entity) == hammerId) {
 				return entity;
@@ -166,7 +166,7 @@ stock bool:Entity_NameMatches(entity, const String:name[])
  * @param entity			Entity index.
  * @param buffer			Return/Output buffer.
  * @param size				Max size of buffer.
- * @noreturn
+ * @return					Number of non-null bytes written.
  */
 stock Entity_GetName(entity, String:buffer[], size)
 {
@@ -178,14 +178,14 @@ stock Entity_GetName(entity, String:buffer[], size)
  *
  * @param entity			Entity index.
  * @param name				The name you want to give.
- * @noreturn
+ * @return					True on success, false otherwise.
  */
 stock Entity_SetName(entity, const String:name[], any:...)
 {
 	decl String:format[128];
 	VFormat(format, sizeof(format), name, 3);
 
-	DispatchKeyValue(entity, "targetname", format);
+	return DispatchKeyValue(entity, "targetname", format);
 }
 
 /**
@@ -196,17 +196,11 @@ stock Entity_SetName(entity, const String:name[], any:...)
  * @param entity			Entity index.
  * @param buffer			Return/Output buffer.
  * @param size				Max size of buffer.
- * @return					
+ * @return					Number of non-null bytes written.
  */
 stock Entity_GetClassName(entity, String:buffer[], size)
 {
-	GetEntPropString(entity, Prop_Data, "m_iClassname", buffer, size);
-	
-	if (buffer[0] == '\0') {
-		return false;
-	}
-	
-	return true;
+	return GetEntPropString(entity, Prop_Data, "m_iClassname", buffer, size);	
 }
 
 /**
@@ -214,11 +208,11 @@ stock Entity_GetClassName(entity, String:buffer[], size)
  *
  * @param entity			Entity index.
  * @param name				The name you want to give.
- * @noreturn
+ * @return					True on success, false otherwise.
  */
 stock Entity_SetClassName(entity, const String:className[])
 {
-	DispatchKeyValue(entity, "classname", className);
+	return DispatchKeyValue(entity, "classname", className);
 }
 
 /**
@@ -227,11 +221,11 @@ stock Entity_SetClassName(entity, const String:className[])
  * @param entity			Entity index.
  * @param buffer			Return/Output buffer.
  * @param size				Max size of buffer.
- * @noreturn
+ * @return					Number of non-null bytes written.
  */
 stock Entity_GetTargetName(entity, String:buffer[], size)
 {
-	GetEntPropString(entity, Prop_Data, "m_target", buffer, size);
+	return GetEntPropString(entity, Prop_Data, "m_target", buffer, size);
 }
 
 /**
@@ -239,14 +233,14 @@ stock Entity_GetTargetName(entity, String:buffer[], size)
  *
  * @param entity			Entity index.
  * @param name				The target name you want to set
- * @noreturn
+ * @return					True on success, false otherwise.
  */
 stock Entity_SetTargetName(entity, const String:name[], any:...)
 {
 	decl String:format[128];
 	VFormat(format, sizeof(format), name, 3);
 
-	DispatchKeyValue(entity, "target", format);
+	return DispatchKeyValue(entity, "target", format);
 }
 
 /**
@@ -255,11 +249,11 @@ stock Entity_SetTargetName(entity, const String:name[], any:...)
  * @param entity			Entity index.
  * @param buffer			Return/Output buffer.
  * @param size				Max size of buffer.
- * @noreturn
+ * @return					Number of non-null bytes written.
  */
 stock Entity_GetGlobalName(entity, String:buffer[], size)
 {
-	GetEntPropString(entity, Prop_Data, "m_iGlobalname", buffer, size);
+	return GetEntPropString(entity, Prop_Data, "m_iGlobalname", buffer, size);
 }
 
 /**
@@ -267,14 +261,14 @@ stock Entity_GetGlobalName(entity, String:buffer[], size)
  *
  * @param entity			Entity index.
  * @param name				The global name you want to set.
- * @noreturn
+ * @return					True on success, false otherwise.
  */
 stock Entity_SetGlobalName(entity, const String:name[], any:...)
 {
 	decl String:format[128];
 	VFormat(format, sizeof(format), name, 3);
 
-	DispatchKeyValue(entity, "globalname", format);
+	return DispatchKeyValue(entity, "globalname", format);
 }
 
 /**
@@ -283,11 +277,11 @@ stock Entity_SetGlobalName(entity, const String:name[], any:...)
  * @param entity			Entity index.
  * @param buffer			Return/Output buffer.
  * @param size				Max size of buffer.
- * @noreturn
+ * @return					Number of non-null bytes written.
  */
 stock Entity_GetParentName(entity, String:buffer[], size)
 {
-	GetEntPropString(entity, Prop_Data, "m_iParent", buffer, size);
+	return GetEntPropString(entity, Prop_Data, "m_iParent", buffer, size);
 }
 
 /**
@@ -295,14 +289,14 @@ stock Entity_GetParentName(entity, String:buffer[], size)
  *
  * @param entity			Entity index.
  * @param name				The parent name you want to set.
- * @noreturn
+ * @return					True on success, false otherwise.
  */
 stock Entity_SetParentName(entity, const String:name[], any:...)
 {
 	decl String:format[128];
 	VFormat(format, sizeof(format), name, 3);
 
-	DispatchKeyValue(entity, "parentname", format);
+	return DispatchKeyValue(entity, "parentname", format);
 }
 
 /**
@@ -316,6 +310,20 @@ stock Entity_SetParentName(entity, const String:name[], any:...)
 stock Entity_GetHammerId(entity)
 {	
 	return GetEntProp(entity, Prop_Data, "m_iHammerID");
+}
+
+/**
+ * Sets the Hammer-ID of an entity.
+ * The Hammer Editor gives every entity a unique ID.
+ * Note: Old maps don't have Hammer-ID's set for entities
+ *
+ * @param entity			Entity index.
+ * @param hammerId			Hammer ID.
+ * @noreturn
+ */
+stock Entity_SetHammerId(entity, hammerId)
+{	
+	return SetEntProp(entity, Prop_Data, "m_iHammerID", hammerId);
 }
 
 /**
@@ -837,6 +845,8 @@ stock Entity_SetSolidFlags(entity, SolidFlags_t:flags)
 	if (oldFlags == flags) {
 		return;
 	}
+	
+	SetEntProp(entity, Prop_Data, "m_usSolidFlags", flags, 2);
 
 	// These two flags, if changed, can produce different surrounding bounds
 	if ((oldFlags & (FSOLID_FORCE_WORLD_ALIGNED | FSOLID_USE_TRIGGER_BOUNDS)) !=
@@ -952,11 +962,11 @@ stock bool:Entity_IsSolid(entity)
  * @param entity		entity reference or index
  * @param model			buffer String for the model
  * @param size			max size of buffer string
- * @noreturn				
+ * @return				Number of non-null bytes written.
  */
 stock Entity_GetModel(entity, String:buffer[], size)
 {	
-	GetEntPropString(entity, Prop_Data, "m_ModelName", buffer, size);
+	return GetEntPropString(entity, Prop_Data, "m_ModelName", buffer, size);
 }
 
 /**
@@ -1076,7 +1086,7 @@ stock Entity_SetCollisionGroup(entity, Collision_Group_t:value)
  */
 stock Entity_GetAbsOrigin(entity, Float:vec[3])
 {
-	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", vec);
+	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", vec);
 }
 
 /**
@@ -1321,7 +1331,7 @@ stock Entity_TakeHealth(entity, value, ignoreMax=false, kill=true)
 	
 	health -= value;
 	
-	return Entity_SetHealth(entity, value, ignoreMax, kill);
+	return Entity_SetHealth(entity, health, ignoreMax, kill);
 }
 
 /**
@@ -1789,7 +1799,11 @@ stock Entity_ChangeOverTime(entity, Float:interval=0.1, Entity_ChangeOverTimeCal
 	WritePackCell(dataPack, EntIndexToEntRef(entity));
 	WritePackFloat(dataPack, interval);
 	WritePackCell(dataPack, 0);
+#if SOURCEMOD_V_MAJOR >= 1 && SOURCEMOD_V_MINOR >= 7
+	WritePackFunction(dataPack, valueCallback);
+#else
 	WritePackCell(dataPack, _:valueCallback);
+#endif
 	ResetPack(dataPack);
 	__smlib_Timer_ChangeOverTime(INVALID_HANDLE,dataPack);
 }
@@ -1803,7 +1817,12 @@ public Action:__smlib_Timer_ChangeOverTime(Handle:Timer, Handle:dataPack)
 	
 	new Float:interval = ReadPackFloat(dataPack);
 	new currentCall = ReadPackCell(dataPack);
-	new Entity_ChangeOverTimeCallback:callback = Entity_ChangeOverTimeCallback:ReadPackCell(dataPack);
+#if SOURCEMOD_V_MAJOR >= 1 && SOURCEMOD_V_MINOR >= 7
+	new Function:callback = ReadPackFunction(dataPack);
+#else
+	new Function:callback = Function:ReadPackCell(dataPack);
+#endif
+	
 	new any:result;
 	Call_StartFunction(INVALID_HANDLE, callback);
 	Call_PushCellRef(entity);
@@ -1819,7 +1838,11 @@ public Action:__smlib_Timer_ChangeOverTime(Handle:Timer, Handle:dataPack)
 	WritePackCell(dataPack, EntIndexToEntRef(entity));
 	WritePackFloat(dataPack, interval);
 	WritePackCell(dataPack, currentCall+1);
+#if SOURCEMOD_V_MAJOR >= 1 && SOURCEMOD_V_MINOR >= 7
+	WritePackFunction(dataPack, callback);
+#else
 	WritePackCell(dataPack, _:callback);
+#endif
 	ResetPack(dataPack);
 	CreateTimer(interval,__smlib_Timer_ChangeOverTime,dataPack);
 	return Plugin_Stop;
@@ -1838,6 +1861,10 @@ stock Entity_GetNextChild(parent, start=0)
 	for (new entity=start; entity <= 2048; entity++) {
 
 		if (!Entity_IsValid(entity)) {
+			continue;
+		}
+
+		if (entity > 0 && entity <= MaxClients && !IsClientConnected(entity)) {
 			continue;
 		}
 
@@ -1959,22 +1986,22 @@ stock bool:Entity_IsDisabled(entity)
  * Disables the given entity.
  * 
  * @param entity			Entity index.
- * @noreturn
+ * @return					True if successful otherwise false.
  */
 stock Entity_Disable(entity)
 {
-	AcceptEntityInput(entity, "Disable");
+	return AcceptEntityInput(entity, "Disable");
 }
 
 /**
  * Enables the given entity.
  * 
  * @param entity			Entity index.
- * @noreturn
+ * @return					True if successful otherwise false.
  */
 stock Entity_Enable(entity)
 {
-	AcceptEntityInput(entity, "Enable");
+	return AcceptEntityInput(entity, "Enable");
 }
 
 
@@ -2033,3 +2060,108 @@ stock Entity_GetMinHealthDamage(entity)
 {
 	return GetEntProp(entity, Prop_Data, "m_iMinHealthDmg");
 }
+
+/**
+ * Gets an entity's color.
+ *
+ * @param entity	Entity index
+ * @param color 	4 dimensional array where [r,g,b,a] values are stored
+ * @noreturn
+ * @error			Invalid entity index, or lack of mod compliance.
+ */
+stock Entity_GetRenderColor(entity, color[4])
+{
+	static bool:gotconfig = false;
+	static String:prop[32];
+
+	if (!gotconfig) {
+		new Handle:gc = LoadGameConfigFile("core.games");
+		new bool:exists = GameConfGetKeyValue(gc, "m_clrRender", prop, sizeof(prop));
+		CloseHandle(gc);
+
+		if (!exists) {
+			strcopy(prop, sizeof(prop), "m_clrRender");
+		}
+		
+		gotconfig = true;
+	}
+
+	new offset = GetEntSendPropOffs(entity, prop);
+
+	if (offset <= 0) {
+		ThrowError("SetEntityRenderColor not supported by this mod");
+	}
+
+	for (new i=0; i < 4; i++) {
+		color[i] = GetEntData(entity, offset + i + 1, 1);
+	}
+}
+
+/**
+ * Sets an entity's color.
+ * Doesn't change the value, if set to -1.
+ *
+ * @param entity	Entity index
+ * @param r 		Amount of red (0-255)
+ * @param g 		Amount of green (0-255)
+ * @param b 		Amount of blue (0-255)
+ * @param a 		Amount of alpha (0-255)
+ * @noreturn
+ * @error			Invalid entity index, or lack of mod compliance.
+ */
+stock Entity_SetRenderColor(entity, r=-1, g=-1, b=-1, a=-1)
+{
+	static bool:gotconfig = false;
+	static String:prop[32];
+
+	if (!gotconfig) {
+		new Handle:gc = LoadGameConfigFile("core.games");
+		new bool:exists = GameConfGetKeyValue(gc, "m_clrRender", prop, sizeof(prop));
+		CloseHandle(gc);
+
+		if (!exists) {
+			strcopy(prop, sizeof(prop), "m_clrRender");
+		}
+
+		gotconfig = true;
+	}
+
+	new offset = GetEntSendPropOffs(entity, prop);
+
+	if (offset <= 0) {
+		ThrowError("SetEntityRenderColor not supported by this mod");
+	}
+
+	if(r != -1) {
+		SetEntData(entity, offset, r, 1, true);
+	}
+
+	if(g != -1) {
+		SetEntData(entity, offset + 1, g, 1, true);
+	}
+
+	if(b != -1) {
+		SetEntData(entity, offset + 2, b, 1, true);
+	}
+
+	if(a != -1) {
+		SetEntData(entity, offset + 3, a, 1, true);
+	}
+}
+
+/**
+ * Sends the 'addouput' command to an entity.
+ *
+ * @param entity		Entity Index.
+ * @param input			Input command.
+ * @param activator		Entity index which initiated the sequence of actions (-1 for a NULL entity).
+ * @param caller		Entity index from which this event is sent (-1 for a NULL entity).
+ * @param outputid		Unknown.
+ * @return				True if successful, otherwise false.
+ */
+stock bool:Entity_AddOutput(entity, const String:input[], activator=-1, caller=-1, outputid=0)
+{
+	SetVariantString(input);
+	return AcceptEntityInput(entity, "addoutput", activator, caller, outputid);
+}
+
