@@ -54,7 +54,7 @@ public Plugin:myinfo =
 	name = "Time Left Actions", 
 	author = "Chanz", 
 	description = "Actions like sounds and command are executed when a specified time has been reached.", 
-	version = "3.0", 
+	version = "3.1", 
 	url = "http://forums.alliedmods.net/showthread.php?p=843377"
 }
 
@@ -174,14 +174,14 @@ public OnPluginStart()
 	g_cvarEnable = PluginManager_CreateConVar("enable", "1", "Enables or disables this plugin");
 	g_cvarPlugin_Config_Name = PluginManager_CreateConVar("config_name", "default.conf", "Filename of the action config to use (located in <moddir>/addons/sourcemod/configs/time-left-actions/)", FCVAR_PLUGIN);
 
+	//Find ConVars
+	g_cvarC4Timer = FindConVar("mp_c4timer");
+	g_cvarTimeLimit = FindConVar("mp_timelimit");
+
 	// Cvar change hook:
 	HookConVarChange(g_cvarEnable, ConVarChange_Enable);
 	HookConVarChange(g_cvarTimeLimit, ConVarChange_TimeLimit);
 	HookConVarChange(g_cvarPlugin_Config_Name, ConVarChange_Config_Name);
-	
-	//Find ConVars
-	g_cvarC4Timer = FindConVar("mp_c4timer");
-	g_cvarTimeLimit = FindConVar("mp_timelimit");
 	
 	//Event Hooks
 	g_bHooked_Round_Start = HookEventEx("round_start", 			Event_RoundStart);
